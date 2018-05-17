@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	flag "github.com/ogier/pflag"
-	aws "github.com/aws/aws-sdk-go/aws"
+  "fmt"
+  "os"
+  flag "github.com/ogier/pflag"
+  aws "github.com/aws/aws-sdk-go/aws"
   awserr "github.com/aws/aws-sdk-go/aws/awserr"
   awssession "github.com/aws/aws-sdk-go/aws/session"
   awsec2 "github.com/aws/aws-sdk-go/service/ec2"
@@ -23,23 +23,23 @@ var (
 func main() {
 
   // if no parameters are set
-	if len(os.Args) < 2 {
-		printUsage()
-	}
+  if len(os.Args) < 2 {
+    printUsage()
+  }
 
   switch os.Args[1] {
-  case "start":
-    startInstances()
-  case "stop":
-    stopInstances()
-  default:
-    printUsage()
+    case "start":
+      startInstances()
+    case "stop":
+      stopInstances()
+    default:
+      printUsage()
   }
 }
 
 func init() {
-	flag.StringVarP(&profile, "profile", "p", "default", "Select the profile to use")
-	flag.BoolVarP(&verbose, "verbose", "v", false, "Print return value")
+  flag.StringVarP(&profile, "profile", "p", "default", "Select the profile to use")
+  flag.BoolVarP(&verbose, "verbose", "v", false, "Print return value")
   flag.Parse()
   session = loadSession()
   service = loadService()
@@ -47,13 +47,13 @@ func init() {
     Filters: []*awsec2.Filter{
       &awsec2.Filter{
         Name: aws.String("tag:Ephemeral"),
-				Values: []*string{
+        Values: []*string{
           aws.String("False"),
         },
       },
       &awsec2.Filter{
         Name: aws.String("tag:Pausable"),
-				Values: []*string{
+        Values: []*string{
           aws.String("True"),
         },
       },
@@ -78,7 +78,6 @@ func loadSession() *awssession.Session {
 }
 
 func loadService() *awsec2.EC2 {
-  // Force enable Shared Config support
   svc := awsec2.New(session)
 
   return svc
@@ -98,7 +97,8 @@ func loadInstances() {
       if verbose {
         fmt.Println("  > Reservation Id", *res.ReservationId, " Num Instances: ", len(res.Instances))
       }
-		  for _, inst := range result.Reservations[idx].Instances {
+
+      for _, inst := range result.Reservations[idx].Instances {
         if verbose {
           fmt.Println("    - Instance ID: ", *inst.InstanceId)
         }
@@ -121,6 +121,7 @@ func stopInstances() {
     if ok && awsErr.Code() == "DryRunOperation" {
       input.DryRun = aws.Bool(false)
       result, err = service.StopInstances(input)
+
       if err != nil {
         fmt.Println("Error", err)
         os.Exit(1)
