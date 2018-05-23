@@ -177,15 +177,15 @@ func startInstances() {
 }
 
 func printUsage() {
-  fmt.Println("aws-stack-pause helps you stop/start (pause) expensive EC2 Instances on AWS, that need to be non-ephemeral but shouldn't be running all the time.")
+  fmt.Println("awspause helps you stop/start (pause) expensive EC2 Instances on AWS, that need to be non-ephemeral but shouldn't be running all the time.")
   fmt.Println("Tag all Instances with Name=Ephemeral,Values=\"False\" and Name=Pausable,Values=\"True\", enable termination protection and set DeleteOnTermination to false.")
   fmt.Println("")
   fmt.Println("Usage:")
-  fmt.Println("         aws-stack-pause command [options]")
+  fmt.Println("         awspause command [options]")
   fmt.Println("")
   fmt.Println("The commands are:")
   fmt.Println("         start   start all paused machines")
-  fmt.Println("         stop    stop all paused machines")
+  fmt.Println("         stop    stop all pausable machines")
   fmt.Println("")
   fmt.Println("Options:")
   flag.PrintDefaults()
