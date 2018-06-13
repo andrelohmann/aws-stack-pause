@@ -57,6 +57,16 @@ func init() {
           aws.String("True"),
         },
       },
+      &awsec2.Filter{
+        Name: aws.String("instance-state-name"),
+        Values: []*string{
+          aws.String("pending"),
+          aws.String("running"),
+          aws.String("shutting-down"),
+          aws.String("stopping"),
+          aws.String("stopped"),
+        },
+      },
     },
   }
   loadInstances()
