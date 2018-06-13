@@ -58,3 +58,17 @@ awspause command [options]
 
   * verbose,v - print return values and debugging information
   * profile,p - select the profile to use
+
+## Alternative
+
+Alternatively you can start/stop instances by awscli as well, without the need of installing this little go helper.
+
+### starting all pausable instances
+```
+aws ec2 describe-instances --filters Name=tag:Ephemeral,Values="False" Name=tag:Pausable,Values="True" | jq ".Reservations[].Instances[].InstanceId" -r | xargs aws ec2 start-instances --instance-ids
+```
+
+### stopping all pausable Instances
+```
+aws ec2 describe-instances --filters Name=tag:Ephemeral,Values="False" Name=tag:Pausable,Values="True" | jq ".Reservations[].Instances[].InstanceId" -r | xargs aws ec2 stop-instances --instance-ids
+```
