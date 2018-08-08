@@ -119,7 +119,7 @@ func additionalFilters(filter *awsec2.DescribeInstancesInput) {
   if len(ids) > 0 {
     var _ids []*string
     for _, _id := range strings.Split(ids, ","){
-      _ids = append(_ids, &_id)
+      _ids = append(_ids, aws.String(_id))
     }
 
     filter.InstanceIds = _ids
