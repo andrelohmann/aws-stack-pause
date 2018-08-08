@@ -58,6 +58,8 @@ awspause command [options]
 
   * verbose,v - print return values and debugging information
   * profile,p - select the profile to use
+  * tags,t - add additional tags, to filter for (e.g. --tags="Name=fu,Environment=bar")
+  * ids,i - add subset of instance IDs, to iterate over (e.g. --ids=i-1234*************,i-5678*************)
 
 ## Alternative
 
