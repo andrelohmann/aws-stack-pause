@@ -3,6 +3,7 @@ package main
 import (
   "fmt"
   "os"
+  "strings"
   flag "github.com/ogier/pflag"
   aws "github.com/aws/aws-sdk-go/aws"
   awserr "github.com/aws/aws-sdk-go/aws/awserr"
@@ -14,6 +15,8 @@ import (
 var (
   profile   string
   verbose   bool
+  tags      string
+  ids       string
   session   *awssession.Session
   service   *awsec2.EC2
   filter    *awsec2.DescribeInstancesInput
@@ -40,6 +43,8 @@ func main() {
 func init() {
   flag.StringVarP(&profile, "profile", "p", "default", "Select the profile to use")
   flag.BoolVarP(&verbose, "verbose", "v", false, "Print return value")
+  flag.StringVarP(&tags, "tags", "t", "", "Filter by additional tags (e.g. --tags=\"Name=fu,Environment=bar\"")
+  flag.StringVarP(&ids, "ids", "i", "", "Filter by instance ids (e.g. --ids=i-1234*************,i-5678*************")
   flag.Parse()
   session = loadSession()
   service = loadService()
@@ -69,6 +74,7 @@ func init() {
       },
     },
   }
+  additionalFilters(filter)
   loadInstances()
 }
 
@@ -91,6 +97,33 @@ func loadService() *awsec2.EC2 {
   svc := awsec2.New(session)
 
   return svc
+}
+
+func additionalFilters(filter *awsec2.DescribeInstancesInput) {
+  // If filters are set
+  if len(tags) > 0 {
+    for _, _tag := range strings.Split(tags, ","){
+      tag := strings.Split(_tag, "=")
+      if verbose {
+        fmt.Println("Tag: ", tag[0], ", Value: ", tag[1])
+      }
+      filter.Filters = append(filter.Filters, &awsec2.Filter{
+        Name: aws.String("tag:"+tag[0]),
+        Values: []*string{
+          aws.String(tag[1]),
+        },
+      })
+    }
+  }
+
+  if len(ids) > 0 {
+    var _ids []*string
+    for _, _id := range strings.Split(ids, ","){
+      _ids = append(_ids, &_id)
+    }
+
+    filter.InstanceIds = _ids
+  }
 }
 
 func loadInstances() {
