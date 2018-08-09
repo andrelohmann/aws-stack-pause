@@ -74,3 +74,9 @@ aws ec2 describe-instances --filters Name=tag:Ephemeral,Values="False" Name=tag:
 ```
 aws ec2 describe-instances --filters Name=tag:Ephemeral,Values="False" Name=tag:Pausable,Values="True" | jq ".Reservations[].Instances[].InstanceId" -r | xargs aws ec2 stop-instances --instance-ids
 ```
+
+## Automatic stopping instances
+
+Use the following Terraform module, to automaticalle stop all pausable instances during night-time (e.g.)
+
+https://github.com/andrelohmann/aws_pause_terraform
